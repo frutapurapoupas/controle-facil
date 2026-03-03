@@ -15,21 +15,11 @@
       --radius:18px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-      background:linear-gradient(180deg,#070b14 0%,#0b1220 55%, #070b14 100%);
-      color:var(--text)
-    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:linear-gradient(180deg,#070b14 0%,#0b1220 55%, #070b14 100%);color:var(--text)}
     a{color:inherit}
     .app{min-height:100vh;display:flex;flex-direction:column}
-    header{
-      position:sticky;top:0;z-index:20;
-      background:rgba(7,11,20,.8);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid rgba(255,255,255,.06)
-    }
-    .topbar{display:flex;align-items:center;gap:10px;padding:12px 14px;max-width:1400px;margin:0 auto}
+    header{position:sticky;top:0;z-index:20;background:rgba(7,11,20,.8);backdrop-filter: blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .topbar{display:flex;align-items:center;gap:10px;padding:12px 14px}
     .logo{width:34px;height:34px;border-radius:12px;background:rgba(20,184,166,.18);display:grid;place-items:center;box-shadow: var(--shadow)}
     .logo svg{width:20px;height:20px}
     .title{display:flex;flex-direction:column;line-height:1.15}
@@ -37,24 +27,10 @@
     .title small{font-size:12px;color:var(--muted)}
     .statuspill{margin-left:auto;display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06);font-size:12px;color:var(--muted)}
     .dot{width:8px;height:8px;border-radius:999px;background:var(--accent2);box-shadow: 0 0 0 4px rgba(34,197,94,.12)}
-
-    /* Carrossel no topo e responsivo */
-    .carousel{
-      padding: 0 24px 16px;
-      max-width:1400px;
-      margin: 0 auto;
-    }
-    .carouselCard{
-      position:relative;
-      border-radius:var(--radius);
-      overflow:hidden;
-      background:var(--card);
-      box-shadow:var(--shadow);
-      border:1px solid rgba(255,255,255,.06);
-      height: clamp(92px, 14vw, 160px);
-    }
-    .carouselInner{display:flex;height:100%;transition:transform .45s ease}
-    .slide{min-width:100%;height:100%;display:grid;place-items:center;position:relative}
+    .carousel{padding:0 14px 14px}
+    .carouselCard{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--card);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.06)}
+    .carouselInner{display:flex;transition:transform .45s ease}
+    .slide{min-width:100%;aspect-ratio: 16/6;display:grid;place-items:center;position:relative}
     .slideMedia{position:absolute;inset:0}
     .slideMedia img,.slideMedia video{width:100%;height:100%;object-fit:cover;opacity:.9}
     .slideOverlay{position:absolute;inset:0;background:linear-gradient(90deg, rgba(7,11,20,.75), rgba(7,11,20,.05))}
@@ -64,34 +40,12 @@
     .carouselDots{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
     .carouselDots span{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.22)}
     .carouselDots span.active{background:var(--accent)}
-    .hide-mobile{}
-    @media (max-width: 520px){
-      .hide-mobile{display:none;}
-      .carousel{padding:0 10px 10px;}
-      .carouselCard{height: 110px;}
-    }
-
-    main{
-      flex:1;
-      padding:24px;
-      max-width:1400px;
-      width:100%;
-      margin:0 auto
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
-      gap:16px;
-    }
-
+    main{flex:1;padding:14px;max-width:1100px;width:100%;margin:0 auto}
+    .grid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:12px}
+    @media (min-width: 860px){ .grid{grid-template-columns:repeat(3, minmax(0,1fr))} }
     .card{background:rgba(15,27,49,.7);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
-    .btn{
-      display:flex;gap:12px;align-items:center;justify-content:flex-start;
-      padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);cursor:pointer;user-select:none;
-      transition:transform .08s ease, background .15s ease
-    }
+    .btn{display:flex;gap:12px;align-items:center;justify-content:flex-start;padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);cursor:pointer;user-select:none;transition:transform .08s ease, background .15s ease}
     .btn:active{transform:scale(.99)}
     .btn:hover{background:rgba(255,255,255,.06)}
     .ico{width:42px;height:42px;border-radius:14px;background:rgba(20,184,166,.16);display:grid;place-items:center}
@@ -102,12 +56,11 @@
     .chip{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--muted);font-size:12px;border:1px solid rgba(255,255,255,.06)}
     .view{display:none}
     .view.active{display:block}
-    .h1{display:flex;align-items:center;gap:10px;margin:6px 0 12px;flex-wrap:wrap}
+    .h1{display:flex;align-items:center;gap:10px;margin:6px 0 12px}
     .h1 h2{font-size:18px;margin:0}
     .sub{color:var(--muted);font-size:12px;margin-top:4px}
     .panel{display:grid;gap:12px}
-    @media (min-width: 980px){ .panel{grid-template-columns: 1.2fr .8fr} }
-
+    @media (min-width: 860px){ .panel{grid-template-columns: 1.2fr .8fr} }
     .field{display:grid;gap:6px}
     input,select,textarea{
       width:100%; padding:12px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.10);
@@ -118,39 +71,21 @@
     .primary{background:rgba(20,184,166,.18);border-color: rgba(20,184,166,.25)}
     .danger{background:rgba(239,68,68,.16);border-color: rgba(239,68,68,.25)}
     .warn{background:rgba(245,158,11,.16);border-color: rgba(245,158,11,.25)}
-
     .table{width:100%;border-collapse:separate;border-spacing:0 10px}
     .table td,.table th{padding:10px 10px;font-size:12px}
     .table th{color:var(--muted);text-align:left}
     .tr{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
     .tr td:first-child{border-top-left-radius:14px;border-bottom-left-radius:14px}
     .tr td:last-child{border-top-right-radius:14px;border-bottom-right-radius:14px}
-
-    /* Wizard vender */
-    .stepbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 6px}
-    .step{
-      padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);color:var(--muted);font-size:12px
-    }
-    .step.active{background:rgba(20,184,166,.18);border-color:rgba(20,184,166,.28);color:var(--text)}
-    .step.ok{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.22);color:var(--text)}
-    .saleStep{display:none}
-    .saleStep.active{display:block}
-
     footer{padding:14px;color:var(--muted);font-size:12px;display:flex;justify-content:center}
     .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.08)}
-    .toast{
-      position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:50;
-      min-width:260px;max-width:min(560px,calc(100vw - 24px));
-      padding:12px 14px;border-radius:16px;background:rgba(15,27,49,.95);
-      border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);display:none
-    }
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:50;min-width:260px;max-width:min(560px,calc(100vw - 24px));
+      padding:12px 14px;border-radius:16px;background:rgba(15,27,49,.95);border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);display:none}
     .toast.show{display:block}
     .toast b{display:block;font-size:13px}
     .toast small{display:block;color:var(--muted);margin-top:4px}
   </style>
 </head>
-
 <body>
 <div class="app">
   <header>
@@ -176,8 +111,7 @@
         <div class="carouselInner" id="carouselInner"></div>
         <div class="carouselDots" id="carouselDots"></div>
       </div>
-
-      <div class="sub hide-mobile" style="padding:10px 2px 0">
+      <div class="sub" style="padding:10px 2px 0">
         Propaganda segmentada por <span class="kbd">cidade</span>, <span class="kbd">bairro</span> e <span class="kbd">hora</span>.
       </div>
     </div>
@@ -191,13 +125,12 @@
         <span class="chip" id="storeChip">Loja: Piloto</span>
         <span class="chip" id="deviceChip">Dispositivo: ...</span>
         <span class="chip" id="planChip">Plano: Free</span>
-        <span class="chip" id="saleModeChip">Venda: ...</span>
       </div>
 
       <div class="grid">
         <div class="btn primary" data-nav="#/vender">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M7 7h14l-2 9H9L7 7Z" stroke="#14b8a6" stroke-width="2"/><path d="M7 7 6 4H3" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="20" r="1.5" fill="#22c55e"/><circle cx="18" cy="20" r="1.5" fill="#22c55e"/></svg></div>
-          <div class="btntxt"><b>Vender</b><small>Modo simples ou avançado (assistente)</small></div>
+          <div class="btntxt"><b>Vender</b><small>Venda rápida com leitor/câmera</small></div>
         </div>
 
         <div class="btn" data-nav="#/estoque">
@@ -217,17 +150,22 @@
 
         <div class="btn" data-nav="#/relatorios">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/><path d="M8 19V9" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/><path d="M12 19V13" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/><path d="M16 19V7" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/><path d="M20 19V11" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/></svg></div>
-          <div class="btntxt"><b>Relatórios</b><small>Exportações CSV</small></div>
+          <div class="btntxt"><b>Relatórios</b><small>Vendas, pagamentos, etiquetas</small></div>
         </div>
 
         <div class="btn" data-nav="#/dashboard">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="#14b8a6" stroke-width="2"/><path d="M7 14l3-3 2 2 4-5" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="btntxt"><b>Dashboard</b><small>KPIs básicos</small></div>
+          <div class="btntxt"><b>Dashboard</b><small>KPIs e gráficos (básico)</small></div>
+        </div>
+
+        <div class="btn warn" data-nav="#/cadastro">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="#f59e0b" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="btntxt"><b>Cadastro (Celular)</b><small>Cliente rápido e cartão com código</small></div>
         </div>
 
         <div class="btn danger" data-nav="#/admin">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 1l3 5 6 1-4 4 1 6-6-3-6 3 1-6-4-4 6-1 3-5Z" stroke="#ef4444" stroke-width="2"/></svg></div>
-          <div class="btntxt"><b>Admin</b><small>Planos + Propagandas + Modo Venda</small></div>
+          <div class="btntxt"><b>Admin</b><small>Planos + Propagandas + Liberação</small></div>
         </div>
       </div>
 
@@ -235,67 +173,36 @@
         <div class="row">
           <span class="chip">Mobilefirst</span>
           <span class="chip">Offline-first</span>
-          <span class="chip">Venda simples/avançada</span>
-          <span class="chip">Carrossel segmentado</span>
+          <span class="chip">Câmera/Leitor</span>
+          <span class="chip">Carrossel por hora</span>
+        </div>
+        <div class="sub" style="margin-top:10px">
+          Dica: em leitores Bluetooth que “digitam” o código e mandam <span class="kbd">Enter</span>, basta focar no campo “Código/EAN”.
         </div>
       </div>
     </section>
 
-    <!-- VENDER (Wizard) -->
+    <!-- VENDER -->
     <section class="view" id="view-vender">
-      <div class="h1">
-        <h2>Vender</h2>
-        <span class="chip" id="saleTotalChip">Total: R$ 0,00</span>
-        <span class="chip" id="saleCustomerChip">Cliente: Balcão</span>
-        <span class="chip" id="saleModeChip2">Modo: ...</span>
-      </div>
+      <div class="h1"><h2>Vender</h2><span class="chip" id="saleTotalChip">Total: R$ 0,00</span></div>
 
-      <div class="stepbar">
-        <span class="step" id="st1">1) Cliente</span>
-        <span class="step" id="st2">2) Produtos</span>
-        <span class="step" id="st3">3) Pagamento</span>
-      </div>
-
-      <!-- STEP 1: CLIENTE -->
-      <div class="card saleStep" id="saleStep1">
-        <div class="sub">Escolha como deseja identificar o cliente.</div>
-
-        <div class="grid" style="margin-top:12px">
-          <div class="btn primary" id="btnClientScan">
-            <div class="ico">📇</div>
-            <div class="btntxt"><b>Ler código do cliente</b><small>Cartão/QR/EAN</small></div>
-          </div>
-
-          <div class="btn" id="btnClientSearch">
-            <div class="ico">🔎</div>
-            <div class="btntxt"><b>Procurar cliente</b><small>Nome/WhatsApp</small></div>
-          </div>
-
-          <div class="btn" id="btnClientNew">
-            <div class="ico">➕</div>
-            <div class="btntxt"><b>Cadastrar novo cliente</b><small>Rápido: Nome + WhatsApp</small></div>
-          </div>
-
-          <div class="btn warn" id="btnClientSkip">
-            <div class="ico">⏭️</div>
-            <div class="btntxt"><b>Pular</b><small>Venda balcão (sem WhatsApp)</small></div>
-          </div>
-        </div>
-
-        <div class="actions" style="margin-top:12px">
-          <button class="btn" data-nav="#/" type="button">Voltar</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: PRODUTOS -->
-      <div class="panel saleStep" id="saleStep2">
+      <div class="panel">
         <div class="card">
-          <div class="sub">Leia o EAN do produto (leitor Bluetooth ou câmera). Se não existir, será aberto o cadastro por foto frente/verso.</div>
+          <div class="sub">Cliente (opcional, não bloqueante)</div>
+          <div class="row" style="margin-top:8px">
+            <select id="saleCustomer"></select>
+            <button class="btn" id="btnQuickCustomer" type="button" style="flex:1">
+              <div class="btntxt"><b>+ Cliente rápido</b><small>Nome + WhatsApp</small></div>
+            </button>
+          </div>
 
-          <div class="row" style="margin-top:10px">
-            <input id="scanInput" placeholder="Bipe aqui o EAN e pressione Enter" inputmode="numeric" />
+          <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0"/>
+
+          <div class="sub">Adicionar produto (código/EAN)</div>
+          <div class="row" style="margin-top:8px">
+            <input id="scanInput" placeholder="Bipe aqui ou digite o código e pressione Enter" inputmode="numeric" />
             <button class="btn primary" id="btnScanCam" type="button">
-              <div class="btntxt"><b>📷 Câmera</b><small>Leitor</small></div>
+              <div class="btntxt"><b>📷 Câmera</b><small>BarcodeDetector</small></div>
             </button>
           </div>
 
@@ -307,71 +214,30 @@
 
           <div class="actions" style="margin-top:10px">
             <button class="btn" id="btnClearSale" type="button">Limpar venda</button>
-            <button class="btn primary" id="btnGoPay" type="button">Ir para pagamento</button>
+            <button class="btn primary" id="btnCheckout" type="button">Finalizar</button>
             <button class="btn" data-nav="#/" type="button">Voltar</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="sub">Dica</div>
-          <div class="sub" style="margin-top:10px">
-            Se o seu leitor envia <span class="kbd">Enter</span>, basta focar no campo e bipar.
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 3: PAGAMENTO -->
-      <div class="panel saleStep" id="saleStep3">
-        <div class="card">
-          <div class="sub">Resumo da venda</div>
-
-          <table class="table" id="saleSummary" style="margin-top:10px">
-            <thead><tr><th>Item</th><th>Qtd</th><th>Subtotal</th></tr></thead>
-            <tbody></tbody>
-          </table>
-
-          <div class="row" style="margin-top:8px">
-            <span class="chip" id="payTotalChip">Total: R$ 0,00</span>
-            <span class="chip" id="paySumChip">Pago: R$ 0,00</span>
-            <span class="chip" id="payChangeChip">Troco: R$ 0,00</span>
-          </div>
-
-          <div class="actions" style="margin-top:12px">
-            <button class="btn" id="btnBackProducts" type="button">Voltar para produtos</button>
-            <button class="btn primary" id="btnCheckout" type="button">Finalizar</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="sub">Pagamento fracionado</div>
-
-          <div class="field" style="margin-top:10px"><label>Dinheiro (parte do pagamento)</label><input id="payCash" inputmode="decimal" placeholder="0,00"></div>
+          <div class="sub">Pagamento (combinado)</div>
+          <div class="field" style="margin-top:10px"><label>Dinheiro</label><input id="payCash" inputmode="decimal" placeholder="0,00"></div>
           <div class="field"><label>PIX</label><input id="payPix" inputmode="decimal" placeholder="0,00"></div>
           <div class="field"><label>Cartão</label><input id="payCard" inputmode="decimal" placeholder="0,00"></div>
           <div class="field"><label>Fiado</label><input id="payFiado" inputmode="decimal" placeholder="0,00"></div>
-
-          <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0"/>
-
-          <div class="field"><label>Dinheiro recebido (para calcular troco)</label><input id="cashReceived" inputmode="decimal" placeholder="0,00"></div>
-          <div class="sub" style="margin-top:8px">O troco é calculado com base no dinheiro recebido vs. dinheiro usado no pagamento.</div>
-
-          <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0"/>
-
-          <div class="actions">
-            <button class="btn" id="btnSendWhats" type="button">Enviar resumo no WhatsApp</button>
+          <div class="row" style="margin-top:10px">
+            <span class="chip" id="paySumChip">Pago: R$ 0,00</span>
+            <span class="chip" id="payChangeChip">Troco: R$ 0,00</span>
           </div>
-          <div class="sub" style="margin-top:8px">Só envia se o cliente tiver WhatsApp cadastrado.</div>
+          <div class="sub" style="margin-top:10px">Obs: Tudo grava de forma “atômica” (ou salva tudo, ou não salva nada).</div>
         </div>
       </div>
-
-      <!-- Captura foto frente/verso (para produto não encontrado) -->
-      <input id="capFront" type="file" accept="image/*" capture="environment" style="display:none" />
-      <input id="capBack"  type="file" accept="image/*" capture="environment" style="display:none" />
     </section>
 
     <!-- ESTOQUE -->
     <section class="view" id="view-estoque">
       <div class="h1"><h2>Estoque</h2><span class="chip" id="stockCountChip">0 itens</span></div>
+
       <div class="panel">
         <div class="card">
           <div class="row">
@@ -386,48 +252,22 @@
         </div>
 
         <div class="card">
-          <div class="sub">Editor (Base EAN)</div>
-
+          <div class="sub">Editor</div>
           <div class="field" style="margin-top:10px"><label>EAN</label><input id="pEan" placeholder="Código de barras / EAN" /></div>
-          <div class="field"><label>SKU</label><input id="pSku" placeholder="Gerado automaticamente (opcional)" /></div>
-          <div class="field"><label>Descrição</label><input id="pName" placeholder="Descrição" /></div>
-
+          <div class="field"><label>Nome</label><input id="pName" placeholder="Descrição" /></div>
+          <div class="field"><label>Categoria</label><input id="pCat" placeholder="Ex: Bebidas" /></div>
           <div class="row">
-            <div class="field" style="flex:1"><label>Marca</label><input id="pBrand" placeholder="Ex: Ypê" /></div>
-            <div class="field" style="flex:1"><label>Fornecedor</label><input id="pVendor" placeholder="Ex: Atacadão X" /></div>
-          </div>
-
-          <div class="row">
-            <div class="field" style="flex:1"><label>Categoria</label><input id="pCat" placeholder="Ex: Bebidas" /></div>
-            <div class="field" style="flex:1"><label>Validade</label><input id="pExp" type="date" /></div>
-          </div>
-
-          <div class="row">
-            <div class="field" style="flex:1"><label>Unidade</label>
-              <select id="pUnit">
-                <option value="un">un</option>
-                <option value="kg">kg</option>
-                <option value="g">g</option>
-                <option value="l">l</option>
-                <option value="ml">ml</option>
-              </select>
-            </div>
-            <div class="field" style="flex:1"><label>Conteúdo (ex: 1, 900, 500)</label><input id="pContent" inputmode="decimal" placeholder="0" /></div>
-          </div>
-
-          <div class="row">
-            <div class="field" style="flex:1"><label>Qtd em estoque</label><input id="pQty" inputmode="decimal" placeholder="0" /></div>
+            <div class="field" style="flex:1"><label>Qtd</label><input id="pQty" inputmode="decimal" placeholder="0" /></div>
             <div class="field" style="flex:1"><label>Preço venda</label><input id="pPrice" inputmode="decimal" placeholder="0,00" /></div>
           </div>
-
           <div class="row">
-            <div class="field" style="flex:1"><label>Preço compra (pode preencher depois)</label><input id="pCost" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field" style="flex:1"><label>Custo (opcional)</label><input id="pCost" inputmode="decimal" placeholder="0,00" /></div>
             <div class="field" style="flex:1"><label>Status</label>
               <select id="pStatus"><option value="ativo">Ativo</option><option value="desativado">Desativado</option></select>
             </div>
           </div>
 
-          <div class="sub" style="margin-top:10px">Fotos (frente e verso)</div>
+          <div class="sub" style="margin-top:10px">Fotos (frente e verso) — usado no “produto não encontrado”.</div>
           <div class="row" style="margin-top:8px">
             <input id="pFront" type="file" accept="image/*" capture="environment" />
             <input id="pBack" type="file" accept="image/*" capture="environment" />
@@ -447,14 +287,14 @@
       <div class="h1"><h2>Contas a Pagar/Receber</h2></div>
       <div class="panel">
         <div class="card">
-          <div class="sub">Registrar conta</div>
+          <div class="sub">Registrar conta (com vencimento e recorrência)</div>
           <div class="row" style="margin-top:8px">
             <select id="accType"><option value="pagar">Pagar</option><option value="receber">Receber</option></select>
-            <input id="accDesc" placeholder="Descrição" />
+            <input id="accDesc" placeholder="Descrição (ex: Compra atacado)" />
           </div>
           <div class="row" style="margin-top:8px">
             <input id="accVendor" placeholder="Fornecedor/Cliente" />
-            <input id="accCategory" placeholder="Categoria" />
+            <input id="accCategory" placeholder="Categoria (ex: Pessoais / Empresa)" />
           </div>
           <div class="row" style="margin-top:8px">
             <input id="accAmount" inputmode="decimal" placeholder="Valor (0,00)" />
@@ -465,7 +305,7 @@
             <select id="accPayMethod">
               <option>Dinheiro</option><option>PIX</option><option>Boleto</option><option>Cartão</option><option>Outra</option>
             </select>
-            <input id="accEan" placeholder="EAN opcional" />
+            <input id="accEan" placeholder="Produto (EAN opcional)" />
           </div>
 
           <div class="actions" style="margin-top:10px">
@@ -489,7 +329,7 @@
       <div class="h1"><h2>Fiado</h2><span class="chip" id="fiadoAlertChip">0 vencidos</span></div>
       <div class="panel">
         <div class="card">
-          <div class="sub">Clientes</div>
+          <div class="sub">Clientes e limites</div>
           <table class="table" id="fiadoTable" style="margin-top:10px">
             <thead><tr><th>Cliente</th><th>Limite</th><th>Saldo</th><th>Venc.</th></tr></thead>
             <tbody></tbody>
@@ -500,18 +340,18 @@
           </div>
         </div>
         <div class="card">
-          <div class="sub">Cadastro/edição</div>
+          <div class="sub">Cadastro/edição de cliente</div>
           <div class="field" style="margin-top:10px"><label>Nome</label><input id="cName" placeholder="Nome" /></div>
           <div class="row">
             <div class="field" style="flex:1"><label>WhatsApp</label><input id="cWp" placeholder="(xx) xxxxx-xxxx" /></div>
             <div class="field" style="flex:1"><label>Celular</label><input id="cCell" placeholder="(xx) xxxxx-xxxx" /></div>
           </div>
           <div class="row">
-            <div class="field" style="flex:1"><label>CPF (opcional)</label><input id="cCpf" /></div>
-            <div class="field" style="flex:1"><label>E-mail (opcional)</label><input id="cEmail" /></div>
+            <div class="field" style="flex:1"><label>CPF (opcional)</label><input id="cCpf" placeholder="000.000.000-00" /></div>
+            <div class="field" style="flex:1"><label>E-mail (opcional)</label><input id="cEmail" placeholder="email@..." /></div>
           </div>
           <div class="row">
-            <div class="field" style="flex:1"><label>Limite</label><input id="cLimit" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field" style="flex:1"><label>Limite crédito</label><input id="cLimit" inputmode="decimal" placeholder="0,00" /></div>
             <div class="field" style="flex:1"><label>Vencimento</label><input id="cDue" type="date" /></div>
           </div>
           <div class="actions" style="margin-top:10px">
@@ -527,13 +367,16 @@
     <section class="view" id="view-relatorios">
       <div class="h1"><h2>Relatórios</h2></div>
       <div class="card">
-        <div class="sub">Exportações (CSV)</div>
+        <div class="sub">Exportação simples (CSV) e alertas</div>
         <div class="actions" style="margin-top:10px">
-          <button class="btn primary" id="btnExportSales" type="button">Exportar Vendas</button>
-          <button class="btn" id="btnExportStock" type="button">Exportar Estoque</button>
-          <button class="btn" id="btnExportFiado" type="button">Exportar Fiado</button>
-          <button class="btn" id="btnExportAccounts" type="button">Exportar Contas</button>
+          <button class="btn primary" id="btnExportSales" type="button">Exportar Vendas (CSV)</button>
+          <button class="btn" id="btnExportStock" type="button">Exportar Estoque (CSV)</button>
+          <button class="btn" id="btnExportFiado" type="button">Exportar Fiado (CSV)</button>
+          <button class="btn" id="btnExportAccounts" type="button">Exportar Contas (CSV)</button>
           <button class="btn" data-nav="#/" type="button">Voltar</button>
+        </div>
+        <div class="sub" style="margin-top:10px">
+          (Etapas de etiqueta A4 e cartão 8,56×5,40 cm ficam para a próxima revisão.)
         </div>
       </div>
     </section>
@@ -548,9 +391,10 @@
             <span class="chip" id="kpiMonth">Mês: R$ 0,00</span>
             <span class="chip" id="kpiTicket">Ticket: R$ 0,00</span>
           </div>
+          <div class="sub" style="margin-top:10px">KPIs básicos (faturamento diário/mensal, ticket médio).</div>
         </div>
         <div class="card">
-          <div class="sub">Top produtos</div>
+          <div class="sub">Top produtos (por quantidade vendida)</div>
           <table class="table" id="topTable" style="margin-top:10px">
             <thead><tr><th>Produto</th><th>Qtd</th></tr></thead>
             <tbody></tbody>
@@ -562,23 +406,24 @@
       </div>
     </section>
 
+    <!-- CADASTRO -->
+    <section class="view" id="view-cadastro">
+      <div class="h1"><h2>Cadastro (Celular)</h2></div>
+      <div class="card">
+        <div class="sub">Cadastro rápido (cliente) para uso no celular (mobilefirst).</div>
+        <div class="actions" style="margin-top:10px">
+          <button class="btn primary" data-nav="#/fiado" type="button">Abrir Fiado / Clientes</button>
+          <button class="btn" data-nav="#/" type="button">Voltar</button>
+        </div>
+      </div>
+    </section>
+
     <!-- ADMIN -->
     <section class="view" id="view-admin">
       <div class="h1"><h2>Admin</h2><span class="chip">Central</span></div>
       <div class="panel">
         <div class="card">
-          <div class="sub">Modo de venda</div>
-          <div class="row" style="margin-top:10px">
-            <select id="saleModeSelect">
-              <option value="simple">Simples (caixa rápido)</option>
-              <option value="advanced">Avançado (assistente 3 passos)</option>
-            </select>
-            <button class="btn primary" id="btnSetSaleMode" type="button">Aplicar modo</button>
-          </div>
-
-          <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0"/>
-
-          <div class="sub">Planos</div>
+          <div class="sub">Planos (Freemium) e liberação</div>
           <div class="row" style="margin-top:10px">
             <select id="planSelect">
               <option value="free">Gratuito</option>
@@ -591,13 +436,13 @@
 
           <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0"/>
 
-          <div class="sub">Propaganda</div>
+          <div class="sub">Propaganda (upload + segmentação por cidade/bairro/hora)</div>
           <div class="row" style="margin-top:10px">
-            <input id="adTitle" placeholder="Título curto" />
+            <input id="adTitle" placeholder="Título curto (ex: Atacado X)" />
             <select id="adDevice"><option value="both">Celular+Notebook</option><option value="mobile">Somente celular</option><option value="desktop">Somente notebook</option></select>
           </div>
           <div class="row" style="margin-top:8px">
-            <input id="adCity" placeholder="Cidade" />
+            <input id="adCity" placeholder="Cidade (ex: Valente)" />
             <input id="adBairro" placeholder="Bairro (opcional)" />
           </div>
           <div class="row" style="margin-top:8px">
@@ -609,11 +454,20 @@
             <input id="adMedia" type="file" accept="image/*,video/*" />
           </div>
           <div class="row" style="margin-top:8px">
-            <input id="adLink" placeholder="Link (opcional)" />
+            <input id="adLink" placeholder="Link (opcional) / ex: WhatsApp do fornecedor" />
             <button class="btn primary" id="btnSaveAd" type="button">Salvar propaganda</button>
           </div>
 
+          <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0"/>
+
+          <div class="sub">Preço padrão por hora (editável)</div>
+          <div class="row" style="margin-top:10px">
+            <input id="pricePerHour" inputmode="decimal" placeholder="ex: 5,00" />
+            <button class="btn" id="btnSavePrice" type="button">Salvar preço</button>
+          </div>
+
           <div class="actions" style="margin-top:12px">
+            <button class="btn" id="btnSeedDemo" type="button">Carregar dados demo</button>
             <button class="btn" data-nav="#/" type="button">Voltar</button>
           </div>
         </div>
@@ -624,13 +478,16 @@
             <thead><tr><th>Título</th><th>Segm.</th><th>Hora</th><th></th></tr></thead>
             <tbody></tbody>
           </table>
+          <div class="sub" style="margin-top:10px">
+            Suspensão por inadimplência e relatório de visualizações ficam para a próxima revisão.
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer>Controle Fácil – PWA Offline • v0.2 (Venda Wizard)</footer>
+  <footer>Controle Fácil – PWA Offline • v0.1</footer>
 
   <div class="toast" id="toast"><b id="toastTitle"></b><small id="toastMsg"></small></div>
 </div>
