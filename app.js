@@ -1,6 +1,6 @@
 /* Controle Fácil – PWA (v0.2)
    Offline-first com IndexedDB, rotas simples por hash e carrossel segmentado.
-   v0.2: Leitor de código por câmera (BarcodeDetector) + cadastro assistido com fotos frente/verso.
+   v0.2.1: Leitor de código por câmera (BarcodeDetector) + cadastro assistido com fotos frente/verso.
 */
 'use strict';
 
@@ -1000,22 +1000,28 @@ async function checkoutSale(){
 
 /* ---------- Camera scanning ---------- */
 async function scanByCamera(){
-  if(!('BarcodeDetector' in window)){
+  const canBD = ('BarcodeDetector' in window);
+  const canZX = (window.ZXing && (ZXing.BrowserMultiFormatReader || ZXing.BrowserBarcodeReader));
+  if(!canBD && !canZX){
     toast('Leitor não suportado', 'Neste celular, use leitor Bluetooth ou digite o EAN.');
     return;
   }
 
-  // usa somente formatos suportados no device
+  // usa somente formatos suportados no device (BarcodeDetector)
   let formats = ['ean_13','ean_8','code_128','code_39','qr_code','upc_a','upc_e'];
   try{
-    const sup = await BarcodeDetector.getSupportedFormats();
-    if(Array.isArray(sup) && sup.length) formats = formats.filter(f=>sup.includes(f));
+    if(canBD){
+      const sup = await BarcodeDetector.getSupportedFormats();
+      if(Array.isArray(sup) && sup.length) formats = formats.filter(f=>sup.includes(f));
+    }
   }catch(_){ }
-  const detector = new BarcodeDetector({formats});
+  const detector = canBD ? new BarcodeDetector({formats}) : null;
   let stream = null;
   let running = true;
   let lastHit = 0;
   const startedAt = Date.now();
+  let zxingStarted = false;
+  let zxingControls = null;
   const TIMEOUT_MS = 12000;
 
   const wrap = document.createElement('div');
@@ -1063,8 +1069,41 @@ async function scanByCamera(){
         if(now - lastHit < 120){ requestAnimationFrame(tick); return; }
         lastHit = now;
 
-        const barcodes = await detector.detect(video);
-        if(barcodes?.length){
+        // 1) tenta BarcodeDetector (rápido quando funciona)
+        if(detector){
+          const barcodes = await detector.detect(video);
+          if(barcodes?.length){
+            const code = barcodes[0].rawValue;
+            running = false;
+            cleanup();
+            if(code) await addToSaleByEan(code);
+            return;
+          }
+        }
+
+        // 2) fallback ZXing (funciona em mais aparelhos)
+        if(canZX && !zxingStarted && (Date.now() - startedAt > 3500)){
+          zxingStarted = true;
+          hint.textContent = 'Tentando modo compatível (ZXing)…';
+          try{
+            const Reader = ZXing.BrowserMultiFormatReader || ZXing.BrowserBarcodeReader;
+            const reader = new Reader();
+            zxingControls = await reader.decodeFromVideoElement(video, (result, err) => {
+              if(!running) return;
+              if(result){
+                const code = (result.text || result.getText?.() || '').trim();
+                if(code){
+                  running = false;
+                  cleanup();
+                  addToSaleByEan(code);
+                }
+              }
+            });
+          }catch(e){
+            console.warn('ZXing falhou', e);
+          }
+        }
+
           const code = barcodes[0].rawValue;
           running = false;
           cleanup();
@@ -1086,6 +1125,7 @@ async function scanByCamera(){
   }
 
   function cleanup(){
+    try{ zxingControls?.stop?.(); }catch(_){ }
     try{ stream?.getTracks()?.forEach(t=>t.stop()); }catch(_){}
     wrap.remove();
   }
