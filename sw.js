@@ -1,5 +1,5 @@
-/* Service Worker – Controle Fácil (v0.3) */
-const CACHE = "controle-facil-v03";
+/* Service Worker – Controle Fácil (v0.3.1) */
+const CACHE = "controle-facil-v031";
 const ASSETS = [
   './',
   './index.html',

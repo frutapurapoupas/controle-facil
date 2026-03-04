@@ -1104,12 +1104,6 @@ async function scanByCamera(){
           }
         }
 
-          const code = barcodes[0].rawValue;
-          running = false;
-          cleanup();
-          if(code) await addToSaleByEan(code);
-          return;
-        }
       }catch(_){}
       if(Date.now() - startedAt > TIMEOUT_MS){
         hint.textContent = 'Não consegui ler. Tente ajustar distância/luz. Ou clique em “Cadastrar por foto”.';
