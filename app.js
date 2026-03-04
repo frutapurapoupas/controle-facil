@@ -1000,244 +1000,84 @@ async function checkoutSale(){
 
 /* ---------- Camera scanning ---------- */
 async function scanByCamera(){
-  const canBD = ('BarcodeDetector' in window);
-  const canZX = (window.ZXing && (ZXing.BrowserMultiFormatReader || ZXing.BrowserBarcodeReader));
-  if(!canBD && !canZX){
-    toast('Leitor não suportado', 'Neste celular, use leitor Bluetooth ou digite o EAN.');
+  // IMPORTANTE: leitura por câmera funciona melhor no Chrome/Safari (não em navegadores "dentro" do WhatsApp/Instagram).
+  // Exija HTTPS (Vercel ok) e permissão de câmera liberada para o site.
+  const Z = window.ZXingBrowser || window.ZXing; // @zxing/browser expõe ZXingBrowser (UMD); alguns bundlers expõem ZXing
+  const hasZX = !!(Z && (Z.BrowserMultiFormatReader || Z.BrowserBarcodeReader));
+
+  if(!hasZX){
+    toast('Leitor não carregou', 'Atualize a página e tente novamente. Se persistir, use leitor Bluetooth ou digite o EAN.');
     return;
   }
 
-  // usa somente formatos suportados no device (BarcodeDetector)
-  let formats = ['ean_13','ean_8','code_128','code_39','qr_code','upc_a','upc_e'];
-  try{
-    if(canBD){
-      const sup = await BarcodeDetector.getSupportedFormats();
-      if(Array.isArray(sup) && sup.length) formats = formats.filter(f=>sup.includes(f));
-    }
-  }catch(_){ }
-  const detector = canBD ? new BarcodeDetector({formats}) : null;
-  let stream = null;
-  let running = true;
-  let lastHit = 0;
-  const startedAt = Date.now();
-  let zxingStarted = false;
-  let zxingControls = null;
-  const TIMEOUT_MS = 12000;
+  // UI
+  $('scanStatus').textContent = 'Solicitando permissão da câmera...';
+  scanModal.style.display = 'flex';
+  const video = $('scanVideo');
+  const btnTorch = $('btnTorch'); if(btnTorch){ btnTorch.style.display = 'none'; } // torch via ZXing depende do device; manteremos simples nesta versão
+  let controls = null;
+  let closed = false;
 
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:60;display:grid;place-items:center;padding:16px;';
-  wrap.innerHTML = `
-    <div style="width:min(560px,100%);background:rgba(15,27,49,.98);border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden">
-      <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center;color:#e5e7eb">
-        <b>Leitor pela câmera</b>
-        <div style="display:flex;gap:8px">
-          <button id="camAssist" class="btn" type="button" style="padding:10px 12px">Cadastrar por foto</button>
-          <button id="camClose" class="btn" type="button" style="padding:10px 12px">Fechar</button>
-        </div>
-      </div>
-      <div style="position:relative;aspect-ratio: 16/10;background:#000">
-        <video id="camVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video>
-        <div style="position:absolute;inset:16px;border:2px dashed rgba(20,184,166,.7);border-radius:18px"></div>
-      </div>
-      <div id="camHint" style="padding:10px 12px;color:#98a2b3;font-size:12px">Aponte para o código de barras. Quando ler, o item entra na venda.</div>
-    </div>
-  `;
-  document.body.appendChild(wrap);
-  $('#camClose', wrap).addEventListener('click', ()=>{ running=false; cleanup(); });
-  $('#camAssist', wrap).addEventListener('click', async ()=>{ running=false; cleanup(); await openAssistedProductCapture(''); });
+  const cleanup = ()=>{
+    if(closed) return;
+    closed = true;
+    try{ if(controls && controls.stop) controls.stop(); }catch(e){}
+    try{ video.srcObject = null; }catch(e){}
+    scanModal.style.display = 'none';
+    $('scanStatus').textContent = '';
+  };
 
-  const video = $('#camVideo', wrap);
-  const hint = $('#camHint', wrap);
+  $('btnScanClose').onclick = cleanup;
+
+  // Se o usuário quiser cadastrar por foto manualmente
+  $('btnScanAssist').onclick = ()=>{
+    cleanup();
+    openAssistedProductCapture();
+  };
 
   try{
-    stream = await navigator.mediaDevices.getUserMedia({
-      video:{
-        facingMode:{ideal:'environment'},
-        width:{ideal:1280},
-        height:{ideal:720}
-      },
-      audio:false
-    });
-    video.srcObject = stream;
-    await waitVideoReady(video);
-    try{ await video.play(); }catch(_){ }
+    const reader = new (Z.BrowserMultiFormatReader || Z.BrowserBarcodeReader)();
 
-    const tick = async ()=>{
-      if(!running) return;
-      try{
-        const now = Date.now();
-        if(now - lastHit < 120){ requestAnimationFrame(tick); return; }
-        lastHit = now;
-
-        // 1) tenta BarcodeDetector (rápido quando funciona)
-        if(detector){
-          const barcodes = await detector.detect(video);
-          if(barcodes?.length){
-            const code = barcodes[0].rawValue;
-            running = false;
-            cleanup();
-            if(code) await addToSaleByEan(code);
-            return;
-          }
-        }
-
-        // 2) fallback ZXing (funciona em mais aparelhos)
-        if(canZX && !zxingStarted && (Date.now() - startedAt > 3500)){
-          zxingStarted = true;
-          hint.textContent = 'Tentando modo compatível (ZXing)…';
-          try{
-            const Reader = ZXing.BrowserMultiFormatReader || ZXing.BrowserBarcodeReader;
-            const reader = new Reader();
-            zxingControls = await reader.decodeFromVideoElement(video, (result, err) => {
-              if(!running) return;
-              if(result){
-                const code = (result.text || result.getText?.() || '').trim();
-                if(code){
-                  running = false;
-                  cleanup();
-                  addToSaleByEan(code);
-                }
-              }
-            });
-          }catch(e){
-            console.warn('ZXing falhou', e);
-          }
-        }
-
-      }catch(_){}
-      if(Date.now() - startedAt > TIMEOUT_MS){
-        hint.textContent = 'Não consegui ler. Tente ajustar distância/luz. Ou clique em “Cadastrar por foto”.';
+    // tenta escolher a câmera traseira
+    let deviceId = undefined;
+    try{
+      const devices = await reader.listVideoInputDevices();
+      if(devices && devices.length){
+        const back = devices.find(d => /back|rear|trase|environment/i.test(d.label || ''));
+        deviceId = (back || devices[0]).deviceId;
       }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+    }catch(e){
+      // ok: alguns browsers só liberam label depois de permitir câmera
+    }
+
+    $('scanStatus').textContent = 'Aponte para o código de barras (EAN)...';
+
+    // decode contínuo; só fecha quando encontrar um código
+    controls = await reader.decodeFromVideoDevice(deviceId, video, (result, err)=>{
+      if(result){
+        const code = (result.getText ? result.getText() : String(result.text || result)).trim();
+        if(code){
+          $('eanInput').value = code;
+          cleanup();
+          addToSaleByEan(code);
+        }
+      }
+      // err é comum quando "não achou nada ainda" — ignorar silenciosamente
+    });
+
+    // garantia: se por algum motivo o vídeo não ficar "tocando", avisar
+    setTimeout(()=>{
+      if(!closed && (video.readyState < 2)){
+        $('scanStatus').textContent = 'Se a imagem não aparecer, toque em "Cadastrar por foto" ou digite o EAN.';
+      }
+    }, 1200);
+
   }catch(err){
     console.error(err);
-    toast('Câmera bloqueada', 'Permita acesso à câmera.');
-    running = false;
+    toast('Falha ao iniciar leitor', String(err && err.message ? err.message : err));
     cleanup();
   }
-
-  function cleanup(){
-    try{ zxingControls?.stop?.(); }catch(_){ }
-    try{ stream?.getTracks()?.forEach(t=>t.stop()); }catch(_){}
-    wrap.remove();
-  }
 }
-
-/* ---------- Accounts ---------- */
-async function saveAccount(){
-  const type = $('#accType').value;
-  const desc = $('#accDesc').value.trim();
-  const amount = money.parse($('#accAmount').value);
-  const due = $('#accDue').value;
-  const parc = Math.max(1, parseInt($('#accParc').value || '1', 10) || 1);
-  const vendor = $('#accVendor').value.trim();
-  const category = $('#accCategory').value.trim();
-  const payMethod = $('#accPayMethod').value;
-  const ean = $('#accEan').value.trim();
-
-  if(!desc || !due || amount <= 0){
-    toast('Campos obrigatórios','Descrição, vencimento e valor.');
-    return;
-  }
-
-  const baseId = uid('a');
-  const items = [];
-  for(let i=0;i<parc;i++){
-    const d = new Date(due);
-    d.setMonth(d.getMonth()+i);
-    items.push({
-      id: baseId + '_' + (i+1),
-      type, desc: parc>1 ? `${desc} (${i+1}/${parc})` : desc,
-      vendor, category, payMethod, ean,
-      amount,
-      due: d.toISOString().slice(0,10),
-      createdAt: new Date().toISOString(),
-      status: 'aberto'
-    });
-  }
-  for(const it of items) await db.put(STORES.accounts, it);
-
-  toast('Conta salva', `${parc} lançamento(s)`);
-  ['accDesc','accAmount','accVendor','accCategory','accParc','accEan'].forEach(id=>$('#'+id).value='');
-  await renderAccounts();
-}
-
-async function renderAccounts(){
-  const list = await db.all(STORES.accounts);
-  const sorted = list.sort((a,b)=>(a.due||'').localeCompare(b.due||'')).slice(0, 12);
-  const tb = $('#accTable tbody');
-  tb.innerHTML = '';
-  for(const a of sorted){
-    const tr = document.createElement('tr');
-    tr.className = 'tr';
-    tr.innerHTML = `
-      <td>${escapeHtml(a.type)}</td>
-      <td>${escapeHtml(a.desc)}</td>
-      <td>${escapeHtml(a.due)}</td>
-      <td>${money.fmt(a.amount)}</td>
-    `;
-    tb.appendChild(tr);
-  }
-}
-
-/* ---------- Dashboard ---------- */
-async function renderDash(){
-  const sales = await db.all(STORES.sales);
-  const now = new Date();
-  const day = now.toISOString().slice(0,10);
-  const month = now.toISOString().slice(0,7);
-
-  const daySales = sales.filter(s => (s.createdAt||'').slice(0,10) === day);
-  const monthSales = sales.filter(s => (s.createdAt||'').slice(0,7) === month);
-
-  const sum = arr => arr.reduce((t,s)=>t+(s.total||0),0);
-  const dayTotal = sum(daySales);
-  const monthTotal = sum(monthSales);
-  const ticket = daySales.length ? (dayTotal / daySales.length) : 0;
-
-  $('#kpiDay').textContent = `Hoje: ${money.fmt(dayTotal)}`;
-  $('#kpiMonth').textContent = `Mês: ${money.fmt(monthTotal)}`;
-  $('#kpiTicket').textContent = `Ticket: ${money.fmt(ticket)}`;
-
-  // top products
-  const agg = new Map();
-  for(const s of monthSales){
-    for(const it of (s.items||[])){
-      const key = it.name || it.ean || it.productId;
-      agg.set(key, (agg.get(key)||0) + (it.qty||0));
-    }
-  }
-  const top = Array.from(agg.entries()).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const tb = $('#topTable tbody');
-  tb.innerHTML = '';
-  for(const [name, qty] of top){
-    const tr = document.createElement('tr');
-    tr.className = 'tr';
-    tr.innerHTML = `<td>${escapeHtml(name)}</td><td>${qty}</td>`;
-    tb.appendChild(tr);
-  }
-}
-
-/* ---------- Reports (CSV) ---------- */
-async function exportCsv(kind){
-  const store = STORES[kind];
-  if(!store){ toast('Não implementado',''); return; }
-  const rows = await db.all(store);
-  const csv = toCsv(rows);
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `controle-facil_${kind}_${new Date().toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-  toast('Exportado', a.download);
-}
-
 function toCsv(rows){
   if(!rows.length) return '';
   const keys = Array.from(new Set(rows.flatMap(r=>Object.keys(r))));
