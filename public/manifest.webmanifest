@@ -1,0 +1,16 @@
+{
+  "name": "Contas ARS",
+  "short_name": "ContasARS",
+  "description": "Controle de contas a pagar e a receber com alertas, fotos e recorrências.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#0b1120",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
